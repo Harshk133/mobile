@@ -1,4 +1,5 @@
-import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { QueryClient, focusManager, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { AppState, Platform } from 'react-native';
 
 import { api, type Shopping } from './api';
 
@@ -8,6 +9,15 @@ export const queryClient = new QueryClient({
     mutations: { retry: 0 },
   },
 });
+
+// Refresh when the app comes back to the foreground, so the screens and the phone's reminders
+// catch up with a day that has moved on.
+if (Platform.OS !== 'web') {
+  focusManager.setEventListener((setFocused) => {
+    const sub = AppState.addEventListener('change', (st) => setFocused(st === 'active'));
+    return () => sub.remove();
+  });
+}
 
 /** Everything that is computed from the pantry. Any change to stock refreshes all of it. */
 const STOCK_KEYS = [['inventory'], ['plan'], ['shopping'], ['alerts'], ['check'], ['cooked'], ['household'], ['waste'], ['bills']];

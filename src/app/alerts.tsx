@@ -6,6 +6,7 @@ import { useSettings } from '@/lib/settings';
 import { Screen } from '@/ui/controls';
 import { EmptyState, ErrorState, ListSkeleton } from '@/ui/feedback';
 import { Button, Card, IconButton, IconTile, Text } from '@/ui/primitives';
+import { ReminderPrompt } from '@/ui/reminders';
 import { space } from '@/ui/theme';
 
 /** Calm reminders from stored data. Each has a stable id, so a dismissed one stays dismissed. */
@@ -20,6 +21,7 @@ export default function Alerts() {
     <Screen title={t('alerts.title')} subtitle={t('alerts.subtitle')}
       right={<IconButton icon="chevron-left" label={t('common.back')} onPress={() => router.back()} />}
       refreshing={alerts.isRefetching} onRefresh={() => refresh()}>
+      <ReminderPrompt />
       {alerts.isError ? (
         <ErrorState error={alerts.error} onRetry={() => alerts.refetch()} />
       ) : alerts.isLoading ? (

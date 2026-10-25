@@ -53,7 +53,13 @@
           "cameraPermission": "AnnaSaathi uses the camera to photograph your grocery bills."
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      [
+        "expo-notifications",
+        {
+          "color": "#1F4D3A"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": false,

@@ -79,6 +79,11 @@ export function BillReview({ draft, onChange, onDone }: { draft: Draft; onChange
           <Text variant="caption" style={{ color: color.accentText }}>{draft.note || t('review.sampleBody')}</Text>
         </Card>
       ) : null}
+      {draft.mode === 'ocr' || draft.mode === 'claude' ? (
+        <Card tone="sage" style={{ padding: space.md }}>
+          <Text variant="caption" style={{ color: color.sageText }}>{t('review.fromPhoto')}</Text>
+        </Card>
+      ) : null}
       {draft.already_imported ? (
         <Card tone="accent" style={{ padding: space.md }}>
           <Text style={{ color: color.accentText }}>{t('review.alreadyImported', { date: draft.already_imported })}</Text>

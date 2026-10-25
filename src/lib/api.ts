@@ -231,7 +231,7 @@ const ScanResult = z.object({
   bill_id: z.string(),
   shop: z.string(),
   source: z.string(),
-  mode: z.enum(['claude', 'preloaded', 'parsed']),
+  mode: z.enum(['claude', 'ocr', 'preloaded', 'parsed']),
   note: z.string().nullable().optional(),
   lines: z.array(ScanLine),
   already_imported: z.string().nullable(),
@@ -256,7 +256,8 @@ export class ApiError extends Error {
 /** True when the server couldn't be reached at all (as opposed to answering with an error). */
 export const isOffline = (e: unknown) => e instanceof ApiError && e.status === 0;
 
-const TIMEOUT_MS = 15000;
+// generous: a free hosted server (e.g. Render) can take up to a minute to wake from sleep
+const TIMEOUT_MS = 60000;
 
 async function j<T>(path: string, init?: RequestInit & { timeout?: number }): Promise<T> {
   const ctrl = new AbortController();
@@ -348,7 +349,7 @@ export const api = {
   check: (item_id: string, action: 'still_have' | 'finished' | 'thrown') =>
     j<{ ok: boolean; message: string }>('/api/check', send('POST', { item_id, action })),
 
-  scanStatus: () => j<{ live_vision: boolean; model: string | null }>('/api/bills/status'),
+  scanStatus: () => j<{ live_vision: boolean; reader: 'claude' | 'ocr_space' | null; model: string | null }>('/api/bills/status'),
   scanSample: (sample_id = 'ganesh_kirana_oct24') => {
     const f = new FormData();
     f.append('sample_id', sample_id);

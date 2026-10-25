@@ -6,6 +6,7 @@ import { useEffect, type ReactNode } from 'react';
 import { Platform, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { useNotificationTaps } from '@/lib/notifications';
 import { queryClient } from '@/lib/queries';
 import { SettingsProvider, useSettings } from '@/lib/settings';
 import { ToastProvider } from '@/ui/feedback';
@@ -15,6 +16,7 @@ SplashScreen.preventAutoHideAsync().catch(() => {});
 
 function Root() {
   const { ready } = useSettings();
+  useNotificationTaps();
   useEffect(() => {
     if (ready) SplashScreen.hideAsync().catch(() => {});
   }, [ready]);

@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 
 import type { Lang, Named } from './api';
 import { setApiOverride } from './config';
+import { DEFAULT_PREFS, type ReminderPrefs } from './reminders';
 import en from '../locales/en.json';
 import hi from '../locales/hi.json';
 import mr from '../locales/mr.json';
@@ -16,10 +17,11 @@ type Settings = {
   apiOverride: string | null;
   welcomed: boolean;
   dismissedAlerts: string[];
+  reminders: ReminderPrefs;
 };
 
 const KEY = 'annasaathi.settings.v1';
-const DEFAULTS: Settings = { lang: 'en', apiOverride: null, welcomed: false, dismissedAlerts: [] };
+const DEFAULTS: Settings = { lang: 'en', apiOverride: null, welcomed: false, dismissedAlerts: [], reminders: DEFAULT_PREFS };
 
 type Ctx = Settings & {
   ready: boolean;
@@ -27,6 +29,8 @@ type Ctx = Settings & {
   t: (key: TKey, params?: Record<string, string | number>) => string;
   /** The item's name in the chosen language. */
   nameOf: (x: Named) => string;
+  /** The item's name for use inside a sentence ("Use your green chilli today"). */
+  inlineNameOf: (x: Named) => string;
   /** The English name when the UI is in Hindi/Marathi (and vice versa), for a second line. */
   altNameOf: (x: Named) => string | null;
 };
@@ -47,7 +51,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       let loaded: Settings = { ...DEFAULTS, lang: deviceLang() };
       try {
         const raw = await AsyncStorage.getItem(KEY);
-        if (raw) loaded = { ...loaded, ...JSON.parse(raw) };
+        if (raw) {
+          const saved = JSON.parse(raw);
+          loaded = { ...loaded, ...saved, reminders: { ...DEFAULT_PREFS, ...saved.reminders } };
+        }
       } catch {}
       setApiOverride(loaded.apiOverride);
       setS(loaded);
@@ -76,7 +83,11 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       const alt = s.lang === 'en' ? x.name_mr || x.name_hi : x.name_en;
       return alt && alt !== nameOf(x) ? alt : null;
     };
-    return { ...s, ready, update, t, nameOf, altNameOf };
+    const inlineNameOf = (x: Named) => {
+      const n = nameOf(x);
+      return s.lang === 'en' ? n.charAt(0).toLowerCase() + n.slice(1) : n;
+    };
+    return { ...s, ready, update, t, nameOf, inlineNameOf, altNameOf };
   }, [s, ready, update]);
 
   return <SettingsCtx.Provider value={value}>{children}</SettingsCtx.Provider>;

@@ -4,6 +4,7 @@ import type { ColorValue } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { IconName } from '@/lib/format';
+import { useReminderSync } from '@/lib/notifications';
 import { useShopping } from '@/lib/queries';
 import { useSettings } from '@/lib/settings';
 import { color } from '@/ui/theme';
@@ -17,6 +18,7 @@ export default function TabsLayout() {
   const { t, welcomed } = useSettings();
   const insets = useSafeAreaInsets();
   const shop = useShopping();
+  useReminderSync();
   if (!welcomed) return <Redirect href="/welcome" />;
   const toBuy = shop.data ? shop.data.counts.to_buy - shop.data.counts.bought : 0;
   return (

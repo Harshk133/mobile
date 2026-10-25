@@ -11,6 +11,7 @@ import { Field, Screen, Sheet } from '@/ui/controls';
 import { ErrorState, ListSkeleton, useToast } from '@/ui/feedback';
 import { Button, Card, Fact, IconButton, SectionHeader, Segmented, Text, haptic } from '@/ui/primitives';
 import { FoodEditor, MembersEditor } from '@/ui/profileForm';
+import { ReminderSettings } from '@/ui/reminders';
 import { space } from '@/ui/theme';
 
 export default function Family() {
@@ -55,6 +56,9 @@ export default function Family() {
           <Text variant="caption" tone="faint" style={{ marginTop: space.md }}>{t('family.noMedical')}</Text>
         </>
       )}
+
+      <SectionHeader title={t('rem.title')} />
+      <ReminderSettings />
 
       <SectionHeader title={t('settings.title')} />
       <Text variant="label" style={{ marginBottom: space.sm }}>{t('settings.language')}</Text>

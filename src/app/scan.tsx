@@ -219,6 +219,7 @@ export default function Scan() {
 
   /* ---------------- choose */
   const live = status.data?.live_vision;
+  const reader = status.data?.reader;
   return (
     <Screen title={t('scan.title')} subtitle={t('scan.subtitle')} right={back}>
       {saved ? (
@@ -241,9 +242,13 @@ export default function Scan() {
       <Card style={{ marginTop: space.xl, gap: space.sm }}>
         <View style={{ flexDirection: 'row', gap: space.sm, alignItems: 'center' }}>
           <Icon name={live ? 'cellphone-check' : 'information-outline'} tint={live ? color.primary : color.accent} />
-          <Text variant="label" style={{ flex: 1 }}>{status.isLoading ? t('common.loading') : live ? t('scan.liveOn') : t('scan.liveOff')}</Text>
+          <Text variant="label" style={{ flex: 1 }}>
+            {status.isLoading ? t('common.loading') : reader === 'ocr_space' ? t('scan.liveOcr') : live ? t('scan.liveOn') : t('scan.liveOff')}
+          </Text>
         </View>
-        <Text variant="caption" tone="muted">{live ? t('scan.privacyLive') : t('scan.privacyOff')}</Text>
+        <Text variant="caption" tone="muted">
+          {reader === 'ocr_space' ? t('scan.privacyOcr') : live ? t('scan.privacyLive') : t('scan.privacyOff')}
+        </Text>
       </Card>
 
       <Card tone="sage" style={{ marginTop: space.md, gap: space.sm }}>

@@ -5,6 +5,7 @@ React Native · Expo SDK 58 · Expo Router · TypeScript. Setup, the demo script
 ```bash
 npm install
 npx expo start        # scan the QR code with Expo Go (Android), or press a / w
+npm test              # reminder planner tests
 npx tsc --noEmit      # typecheck
 npx expo-doctor       # dependency check
 ```
@@ -24,6 +25,8 @@ The app needs the API from `../api` running on port 8000; see the root README.
 | `src/ui/review.tsx` | Bill review (shared by scan and voice), with saved drafts |
 | `src/lib/api.ts` | Typed API client; scan results validated with Zod |
 | `src/lib/queries.ts` | TanStack Query hooks. Any stock change refreshes every stock-derived view |
+| `src/lib/reminders.ts` | What phone reminders to schedule (pure, unit-tested in `reminders.test.ts`) |
+| `src/lib/notifications.ts` | expo-notifications: channels, permission, idempotent scheduling, tap → screen |
 | `src/lib/settings.tsx` | Language, server address and dismissed alerts (AsyncStorage); `t()` and item names |
 | `src/locales/*.json` | English, Hindi, Marathi. Missing keys fall back to English |
 
